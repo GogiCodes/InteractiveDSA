@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #00d9ff;
+  --secondary: #b537f2;
+  --success: #00ff41;
+  --warning: #ff9500;
+  --error: #ff006e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #0f172a 100%);
+  color: #f1f5f9;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Glass Morphism Effects */
+@layer components {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl;
+  }
+
+  .glass-card {
+    @apply glass p-6 hover:bg-white/15 transition-all duration-300;
+  }
+
+  .glass-btn {
+    @apply glass px-6 py-2.5 font-semibold text-white border-2 border-transparent hover:border-neon-cyan transition-all duration-300;
+  }
+
+  .glass-btn-primary {
+    @apply glass-btn bg-gradient-to-r from-neon-cyan to-neon-purple hover:shadow-glow-cyan;
+  }
+
+  .neon-text-cyan {
+    @apply text-neon-cyan drop-shadow-lg;
+  }
+
+  .neon-text-purple {
+    @apply text-neon-purple drop-shadow-lg;
+  }
+
+  .glow-border-cyan {
+    @apply border-neon-cyan shadow-glow-cyan;
+  }
+
+  .glow-border-purple {
+    @apply border-neon-purple shadow-glow-purple;
+  }
+
+  .code-editor {
+    @apply glass bg-dark-bg border-dark-border;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00d9ff, #b537f2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00ffff, #c555ff);
+}
