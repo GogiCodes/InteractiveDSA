@@ -156,12 +156,5 @@ npm start
 - Collaborative problem-solving
 - Video explanations
 
-## License
 
-MIT License (TBD)
-
-## Contact
-
-Created by: Your Team Name
-Website: (TBD)
-Email: (TBD)
+Created by: Sumanth Gogineni
