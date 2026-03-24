@@ -1,103 +1,36 @@
-# Interactive DSA Platform
+# Interactive DSA
 
-A comprehensive, AI-powered platform for learning Data Structures and Algorithms through interactive visualizations, animations, and simulations.
+**A mission to make Data Structures and Algorithms simple.**
 
-## Project Overview
+Learn DSA through interactive visualizations, animations, and AI-powered guidance. Code, visualize, understand.
 
-**Interactive DSA** is a full-stack web application that combines:
-- 📊 **Visual Algorithm Animations** - Watch algorithms execute step-by-step
-- 💻 **Live Code Editor** - Write and test code in multiple languages
-- 🤖 **AI Assistance** - Get intelligent hints and explanations
-- 📈 **Progress Tracking** - Visualize your learning journey
-- 🎯 **Adaptive Learning** - Difficulty scales based on performance
+## Stack
 
-## Tech Stack
-
-### Frontend
-- **Framework**: Next.js 14+ (React 18)
-- **Styling**: Tailwind CSS + Custom CSS
-- **Visualization**: Canvas/Three.js for animations
-- **State Management**: Zustand
-- **Real-time**: WebSocket (Socket.io)
-
-### Backend
-- **Framework**: FastAPI (Python 3.11+)
-- **Database**: PostgreSQL
-- **Caching**: Redis
-- **Code Execution**: Judge0 API / Containerized Sandbox
-- **AI**: OpenAI/Claude API
-
-### DevOps
-- **Containerization**: Docker & Docker Compose
-- **Version Control**: Git
-- **Deployment**: (TBD - AWS/Vercel/Railway)
-
-## Project Structure
-
-```
-InteractiveDSA/
-├── backend/                 # FastAPI server
-│   ├── app/
-│   │   ├── routes/         # API endpoints
-│   │   ├── models/         # Pydantic models
-│   │   ├── services/       # Business logic
-│   │   ├── utils/          # Helper functions
-│   │   └── main.py         # App entry point
-│   ├── tests/              # Unit & integration tests
-│   ├── requirements.txt    # Python dependencies
-│   └── docker/             # Docker configuration
-│
-├── frontend/               # Next.js app
-│   ├── src/
-│   │   ├── app/           # App Router (Next.js 13+)
-│   │   ├── components/    # React components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── utils/         # Utility functions
-│   │   └── styles/        # Global styles
-│   ├── public/            # Static assets
-│   ├── package.json       # Node dependencies
-│   └── next.config.js     # Next.js config
-│
-├── database/              # DB migrations & schemas
-│   ├── migrations/        # Alembic migrations
-│   └── schemas.sql        # DB schema definitions
-│
-├── docs/                  # Documentation
-│   ├── API.md            # API documentation
-│   ├── ARCHITECTURE.md    # System architecture
-│   └── SETUP.md          # Setup guide
-│
-├── docker-compose.yml     # Service orchestration
-├── .env.example          # Environment template
-└── README.md             # This file
-```
+- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS
+- **Backend**: FastAPI, PostgreSQL, Redis
+- **Code Execution**: Judge0 API
+- **Real-time**: WebSocket
 
 ## Quick Start
 
-### Prerequisites
-- Node.js 18+
-- Python 3.11+
-- PostgreSQL 14+
-- Redis 7+
-- Docker & Docker Compose (optional)
-
-### Local Setup
-
-1. **Clone the repository**
 ```bash
-cd /Users/sumanth/Desktop/Projects/InteractiveDSA
-```
+# Frontend
+cd frontend
+npm install --legacy-peer-deps
+npm run dev
 
-2. **Backend Setup**
-```bash
+# Backend (coming soon)
 cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python -m uvicorn app.main:app --reload
 ```
 
-3. **Frontend Setup**
+Visit `http://localhost:3000`
+
+---
+
+That's it. Build, learn, get better. 🚀
 ```bash
 cd frontend
 npm install
