@@ -1,36 +1,120 @@
-# 🔍 Dynamic-RAG-Pipeline
+# Dynamic RAG Pipeline
 
-[![RAG Engine](https://img.shields.io/badge/Architecture-Advanced--RAG-blue)](#)
-[![Vector Index](https://img.shields.io/badge/Index-FAISS-orange)](#)
-[![Re-Ranking](https://img.shields.io/badge/Re--Ranker-Cross--Encoder-purple)](#)
-[![Retrieval Score](https://img.shields.io/badge/NDCG%4010-0.68%20(%2B0.07)-brightgreen)](#)
+This repository now contains a compact, local-first **Retrieval-Augmented Generation** prototype.
 
-An end-to-end, locally hosted **Retrieval-Augmented Generation (RAG)** pipeline designed to minimize chunk fragmentation and maximize retrieval precision. Featuring a **semantic drop chunking algorithm**, a **two-stage retrieval pipeline (Bi-Encoder + FAISS + Cross-Encoder)**, and local LLM orchestration for fully grounded, hallucination-resistant Q&A.
+The previous Interactive DSA frontend/backend scaffold has been removed. The project is now centered on a single Python package that demonstrates:
 
----
+* semantic drop chunking
+* two-stage retrieval
+* grounded answer composition
+* a runnable command-line demo
 
-## ✨ Key Technical Highlights
-
-* **Semantic Drop Chunking:** Replaced rigid, character-based splitting with semantic similarity boundaries. Chunks are split dynamically when sentence embedding cosine similarity drops below an adaptive threshold, preserving contextual integrity.
-* **Two-Stage Retrieval (Bi-Encoder + Cross-Encoder):** 
-  1. **Stage 1 (Fast Search):** Dense vector index backed by **FAISS** and a Bi-Encoder for low-latency top-$K$ candidate retrieval.
-  2. **Stage 2 (Precision Re-ranking):** A **Cross-Encoder** re-scores candidates to account for full sentence-pair interactions before feeding context to the LLM.
-* **Grounded Local LLM Generation:** Integrated open-source LLMs running locally via native APIs (Ollama / vLLM / LocalAI) to generate strictly grounded answers bounded by retrieved passages.
-* **Eval-Driven Performance:** Benchmarked on a custom domain QA dataset, increasing **NDCG@10** by **+0.07** over baseline fixed-size chunking strategies.
+The implementation is intentionally lightweight and deterministic so it can run without external services.
 
 ---
 
-## 📊 Benchmark Results
+## What It Includes
 
-Evaluated on a domain-specific QA test set measuring retrieval relevance:
-
-| Architecture / Chunking Strategy | Retrieval Pipeline | NDCG@10 Score |
-| :--- | :--- | :---: |
-| **Baseline RAG (Fixed 512-token chunks)** | Bi-Encoder + FAISS | **0.61** |
-| **Dynamic-RAG (Semantic-Drop chunks)** | **Bi-Encoder + FAISS + Cross-Encoder** | **0.68 (+0.07)** |
-
-> **Key Takeaway:** Semantic chunking keeps full topic thoughts intact, while Cross-Encoder re-ranking removes low-relevance noise from the context window, boosting top-10 ranking precision.
+* **Semantic chunking:** groups sentences until topic similarity drops.
+* **Stage 1 retrieval:** vector-style candidate selection over local chunks.
+* **Stage 2 re-ranking:** cross-encoder-style scoring with lexical and phrase bonuses.
+* **Grounded response synthesis:** answers are composed only from retrieved evidence.
+* **Sample corpus:** built-in documents so the demo works out of the box.
 
 ---
 
-## 🏗️ Architecture & Pipeline Flow
+## Project Layout
+
+```text
+.
+├── main.py
+├── rag_pipeline/
+│   ├── __init__.py
+│   ├── chunking.py
+│   ├── corpus.py
+│   ├── demo.py
+│   ├── llm.py
+│   ├── models.py
+│   ├── pipeline.py
+│   ├── reranking.py
+│   └── retrieval.py
+├── tests/
+│   └── test_pipeline.py
+├── requirements.txt
+└── .env.example
+```
+
+---
+
+## Run The Demo
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
+
+You can also pass your own question:
+
+```bash
+python main.py "How does the re-ranking stage improve the final answer?"
+```
+
+The demo prints a JSON payload with:
+
+* the question
+* the grounded answer
+* the evidence summary
+* the ranked supporting chunks
+
+---
+
+## How The Pipeline Works
+
+1. **Chunking** splits each document into topic-aware chunks.
+2. **Retrieval** scores chunks against the query and keeps the best candidates.
+3. **Re-ranking** reorders those candidates with more precise scoring.
+4. **Answer composition** builds a short grounded response from the best evidence.
+
+---
+
+## Example Output
+
+```json
+{
+  "question": "How does the two-stage RAG pipeline keep answers grounded?",
+  "summary": "Top evidence from: Stage Two Re-ranking, Grounded Answer Generation, Semantic Drop Chunking",
+  "answer": "The retrieved evidence supports a two-stage, grounded RAG pipeline..."
+}
+```
+
+---
+
+## Configuration
+
+The optional `.env.example` file documents the knobs used by the local demo:
+
+* `OPENAI_API_KEY`
+* `OLLAMA_BASE_URL`
+* `SIMILARITY_THRESHOLD`
+* `TOP_K`
+* `RERANK_K`
+
+The current code does not require any of them to run.
+
+---
+
+## Testing
+
+```bash
+pytest
+```
+
+The test suite checks that the pipeline indexes the sample corpus and returns a grounded answer.
+
+---
+
+## Notes
+
+This is a polished prototype, not a full production RAG system. The structure is intentionally clean and finished-looking, but the implementation stays local and dependency-light.
