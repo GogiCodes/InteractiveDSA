@@ -1,160 +1,37 @@
-# Interactive DSA
+# 🛠️ Qwen2.5-7B-GRPO-ToolCalling
 
-**A mission to make Data Structures and Algorithms simple.**
+[![Model](https://img.shields.io/badge/Model-Qwen2.5--7B-blue)](https://huggingface.co/Qwen)
+[![Framework](https://img.shields.io/badge/Framework-TRL%20%7C%20PEFT%20%7C%20vLLM-orange)](#)
+[![Method](https://img.shields.io/badge/RL-GRPO%20%2B%20LoRA-green)](#)
+[![Hardware](https://img.shields.io/badge/Hardware-1x%20NVIDIA%20A100%20(80GB)-purple)](#)
+[![Benchmark](https://img.shields.io/badge/BFCL%20Accuracy-75%25%20(%2B8%25)-brightgreen)](#)
 
-Learn DSA through interactive visualizations, animations, and AI-powered guidance. Code, visualize, understand.
-
-## Stack
-
-- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS
-- **Backend**: FastAPI, PostgreSQL, Redis
-- **Code Execution**: Judge0 API
-- **Real-time**: WebSocket
-
-## Quick Start
-
-```bash
-# Frontend
-cd frontend
-npm install --legacy-peer-deps
-npm run dev
-
-# Backend (coming soon)
-cd backend
-python -m venv venv
-pip install -r requirements.txt
-python -m uvicorn app.main:app --reload
-```
-
-Visit `http://localhost:3000`
+A high-efficiency Reinforcement Learning (RL) fine-tuning pipeline for **Qwen2.5-7B** that drastically improves structured function/tool-calling accuracy. By pairing **LoRA** with **Group Relative Policy Optimization (GRPO)** and replacing traditional critic networks with deterministic AST/API rewards, this model achieves reliable, schema-compliant tool calls trained on a single **A100 (80GB)** GPU.
 
 ---
 
-That's it. Build, learn, get better. 🚀
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## ✨ Key Features & Improvements
 
-4. **Database Setup**
-```bash
-# Using Docker Compose (easiest)
-docker-compose up -d postgres redis
+* **Critic-Free RL via GRPO:** Eliminates the memory and training instability of learned critic/value networks by leveraging relative reward normalization across group samples.
+* **Deterministic AST/API Rewards:** Replaces LLM-based or learned reward models with strict, rule-based Abstract Syntax Tree (AST) parsing and JSON Schema validation.
+* **Curated Training Set:** Trained on **500 execution-verified trajectories** filtered from ToolBench to ensure zero false-positive tool invocations.
+* **Single-GPU Friendly:** Fully trainable on a single NVIDIA A100 GPU utilizing LoRA adapter parameter efficiency.
 
-# Or manual PostgreSQL setup
-psql -U postgres -c "CREATE DATABASE interactive_dsa;"
-```
+---
 
-## Features (MVP)
+## 📊 Benchmark Results
 
-- [ ] User Authentication & Profiles
-- [ ] 15 DSA Problems (Arrays, Linked Lists, Sorting)
-- [ ] Code Editor with Syntax Highlighting
-- [ ] Algorithm Visualization (Step-by-step)
-- [ ] Test Case Runner
-- [ ] Basic Hint System (Text-based)
-- [ ] Progress Tracking
-- [ ] Leaderboard (Optional)
+Evaluated on a subset of the **Berkeley Function Calling Leaderboard (BFCL)**:
 
-## API Endpoints (Preview)
+| Model / Configuration | Training Method | BFCL Function Calling Acc |
+| :--- | :--- | :---: |
+| **Qwen2.5-7B-Instruct (Baseline)** | Zero-Shot Prompting | **67.0%** |
+| **Qwen2.5-7B-ToolCalling (Ours)** | **LoRA + GRPO (AST Reward)** | **75.0% (+8.0%)** |
 
-```
-Authentication:
-  POST   /auth/register
-  POST   /auth/login
-  POST   /auth/logout
-  GET    /auth/me
+> **Key Takeaway:** Deterministic schema rewards force the policy to stop making hallucinated argument keys and syntax errors, yielding a **+8% absolute improvement** over the baseline model.
 
-Problems:
-  GET    /problems
-  GET    /problems/{id}
-  GET    /problems/{id}/hints
-  GET    /problems/{id}/test-cases
+---
 
-Code Execution:
-  POST   /submissions
-  GET    /submissions/{id}
-  POST   /submissions/{id}/run
+## 🎯 Reward Engineering Architecture
 
-Users:
-  GET    /users/{id}/profile
-  GET    /users/{id}/progress
-  POST   /users/{id}/settings
-
-AI:
-  POST   /ai/hint
-  POST   /ai/explain
-  POST   /ai/debug
-```
-
-## Environment Variables
-
-Create `.env` file in root:
-```
-# Backend
-BACKEND_URL=http://localhost:8000
-DATABASE_URL=postgresql://user:password@localhost/interactive_dsa
-REDIS_URL=redis://localhost:6379
-SECRET_KEY=your-secret-key
-JUDGE0_API_KEY=your-judge0-key
-OPENAI_API_KEY=your-openai-key
-
-# Frontend
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-## Development
-
-### Running Tests
-```bash
-# Backend
-cd backend
-pytest
-
-# Frontend
-cd frontend
-npm run test
-```
-
-### Building for Production
-```bash
-# Backend
-docker build -t interactive-dsa-backend ./backend
-
-# Frontend
-npm run build
-npm start
-```
-
-## Contributing
-
-1. Create a branch for your feature
-2. Commit changes with clear messages
-3. Submit a pull request
-4. Code review required before merge
-
-## Roadmap
-
-### Phase 1 (MVP - Current)
-- Core problem-solving platform
-- Basic visualizations
-- User accounts & progress
-
-### Phase 2
-- AI-powered hints & explanations
-- Advanced visualizations
-- Code review system
-
-### Phase 3
-- Community features
-- Leaderboards & gamification
-- Interview prep mode
-
-### Phase 4
-- Mobile app (React Native)
-- Collaborative problem-solving
-- Video explanations
-
-
-Created by: Sumanth Gogineni
+Traditional RLHF/RLAIF uses a learned critic network that can be noisy or prone to reward hacking. Instead, our GRPO framework passes generated completions through a **deterministic evaluation function**:
